@@ -1,4 +1,4 @@
-omkGEngine
+OmkEngine
 ==========
 
 Omkar's Game Engine

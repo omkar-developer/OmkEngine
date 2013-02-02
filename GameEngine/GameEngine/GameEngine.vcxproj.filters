@@ -1,0 +1,272 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="PlatformWindows">
+      <UniqueIdentifier>{5300fc6e-89b2-4dee-bbc0-8264115b33a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PlatformDirectx9">
+      <UniqueIdentifier>{dacb91a7-cb34-4760-8737-7fdb5228e9f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="other">
+      <UniqueIdentifier>{41150ee2-5856-4d37-b163-e4750afabbc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Android">
+      <UniqueIdentifier>{723454e4-469a-4f9c-ae9a-4cecc3a19f1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Android\Manifest">
+      <UniqueIdentifier>{02449843-244d-41a7-9de5-484786b813c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Box2DExt">
+      <UniqueIdentifier>{cf0aad29-e1c2-4bfa-a7c0-b31900f01215}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AndroidManifest.xml">
+      <Filter>Android\Manifest</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Signals.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseResource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SmartPtr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Variant.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WinPlatformMutex.h">
+      <Filter>PlatformWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="WinPlatformWindow.h">
+      <Filter>PlatformWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="WinPlatformThread.h">
+      <Filter>PlatformWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="WinTimer.h">
+      <Filter>PlatformWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="Dx9Device.h">
+      <Filter>PlatformDirectx9</Filter>
+    </ClInclude>
+    <ClInclude Include="Dx9PlatformResource.h">
+      <Filter>PlatformDirectx9</Filter>
+    </ClInclude>
+    <ClInclude Include="Dx9Renderer.h">
+      <Filter>PlatformDirectx9</Filter>
+    </ClInclude>
+    <ClInclude Include="UIWString.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>other</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>other</Filter>
+    </ClInclude>
+    <ClInclude Include="WinPlatformFile.h">
+      <Filter>PlatformWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="Core.h">
+      <Filter>other</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics.h">
+      <Filter>other</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dx8Sound.h">
+      <Filter>PlatformDirectx9</Filter>
+    </ClInclude>
+    <ClInclude Include="DxSoundPlayer.h">
+      <Filter>PlatformDirectx9</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseIO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ZipFile.h">
+      <Filter>other</Filter>
+    </ClInclude>
+    <ClInclude Include="AndPlatformMutex.h">
+      <Filter>Android</Filter>
+    </ClInclude>
+    <ClInclude Include="AndPlatformThread.h">
+      <Filter>Android</Filter>
+    </ClInclude>
+    <ClInclude Include="AndPlatformWindow.h">
+      <Filter>Android</Filter>
+    </ClInclude>
+    <ClInclude Include="AndTimer.h">
+      <Filter>Android</Filter>
+    </ClInclude>
+    <ClInclude Include="NativeSound.h">
+      <Filter>Android</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGLDevice.h">
+      <Filter>Android</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGLPlatformResource.h">
+      <Filter>Android</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGLRenderer.h">
+      <Filter>Android</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundPlayer.h">
+      <Filter>Android</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformFile.h">
+      <Filter>Android</Filter>
+    </ClInclude>
+    <ClInclude Include="TTFont.h">
+      <Filter>other</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>other</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripting.h">
+      <Filter>other</Filter>
+    </ClInclude>
+    <ClInclude Include="GameCode.h">
+      <Filter>Android</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WinPlatformWindow.cpp">
+      <Filter>PlatformWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="WinPlatformThread.cpp">
+      <Filter>PlatformWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="WinTimer.cpp">
+      <Filter>PlatformWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="Dx9Device.cpp">
+      <Filter>PlatformDirectx9</Filter>
+    </ClCompile>
+    <ClCompile Include="Dx9PlatformResource.cpp">
+      <Filter>PlatformDirectx9</Filter>
+    </ClCompile>
+    <ClCompile Include="Dx9Renderer.cpp">
+      <Filter>PlatformDirectx9</Filter>
+    </ClCompile>
+    <ClCompile Include="UIWString.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseResource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>other</Filter>
+    </ClCompile>
+    <ClCompile Include="WinPlatformFile.cpp">
+      <Filter>PlatformWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="Core.cpp">
+      <Filter>other</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>other</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics.cpp">
+      <Filter>other</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dx8Sound.cpp">
+      <Filter>PlatformDirectx9</Filter>
+    </ClCompile>
+    <ClCompile Include="DxSoundPlayer.cpp">
+      <Filter>PlatformDirectx9</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseIO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ZipFile.cpp">
+      <Filter>other</Filter>
+    </ClCompile>
+    <ClCompile Include="Signals.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AndPlatformThread.cpp">
+      <Filter>Android</Filter>
+    </ClCompile>
+    <ClCompile Include="AndPlatformWindow.cpp">
+      <Filter>Android</Filter>
+    </ClCompile>
+    <ClCompile Include="AndTimer.cpp">
+      <Filter>Android</Filter>
+    </ClCompile>
+    <ClCompile Include="NativeSound.cpp">
+      <Filter>Android</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGLDevice.cpp">
+      <Filter>Android</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGLPlatformResource.cpp">
+      <Filter>Android</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGLRenderer.cpp">
+      <Filter>Android</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundPlayer.cpp">
+      <Filter>Android</Filter>
+    </ClCompile>
+    <ClCompile Include="PlatformFile.cpp">
+      <Filter>Android</Filter>
+    </ClCompile>
+    <ClCompile Include="native.cpp">
+      <Filter>Android</Filter>
+    </ClCompile>
+    <ClCompile Include="TTFont.cpp">
+      <Filter>other</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>other</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripting.cpp">
+      <Filter>other</Filter>
+    </ClCompile>
+    <ClCompile Include="GameCode.cpp">
+      <Filter>Android</Filter>
+    </ClCompile>
+    <ClCompile Include="WinPlatform.cpp">
+      <Filter>PlatformWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="Box2DExt\b2Polygon.cpp">
+      <Filter>Box2DExt</Filter>
+    </ClCompile>
+    <ClCompile Include="Box2DExt\b2Triangle.cpp">
+      <Filter>Box2DExt</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual C++ Express 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Game", "Game\Editor.vcxproj", "{CD2CE70F-8E74-4EBC-ACED-1D94FD1F6C9B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug Fullscreen|Android = Debug Fullscreen|Android
+		Debug Fullscreen|Win32 = Debug Fullscreen|Win32
+		Debug|Android = Debug|Android
+		Debug|Win32 = Debug|Win32
+		Release Fullscreen|Android = Release Fullscreen|Android
+		Release Fullscreen|Win32 = Release Fullscreen|Win32
+		Release|Android = Release|Android
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CD2CE70F-8E74-4EBC-ACED-1D94FD1F6C9B}.Debug Fullscreen|Android.ActiveCfg = Debug Fullscreen|Android
+		{CD2CE70F-8E74-4EBC-ACED-1D94FD1F6C9B}.Debug Fullscreen|Android.Build.0 = Debug Fullscreen|Android
+		{CD2CE70F-8E74-4EBC-ACED-1D94FD1F6C9B}.Debug Fullscreen|Android.Deploy.0 = Debug Fullscreen|Android
+		{CD2CE70F-8E74-4EBC-ACED-1D94FD1F6C9B}.Debug Fullscreen|Win32.ActiveCfg = Debug Fullscreen|Win32
+		{CD2CE70F-8E74-4EBC-ACED-1D94FD1F6C9B}.Debug Fullscreen|Win32.Build.0 = Debug Fullscreen|Win32
+		{CD2CE70F-8E74-4EBC-ACED-1D94FD1F6C9B}.Debug|Android.ActiveCfg = Debug|Android
+		{CD2CE70F-8E74-4EBC-ACED-1D94FD1F6C9B}.Debug|Android.Build.0 = Debug|Android
+		{CD2CE70F-8E74-4EBC-ACED-1D94FD1F6C9B}.Debug|Android.Deploy.0 = Debug|Android
+		{CD2CE70F-8E74-4EBC-ACED-1D94FD1F6C9B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CD2CE70F-8E74-4EBC-ACED-1D94FD1F6C9B}.Debug|Win32.Build.0 = Debug|Win32
+		{CD2CE70F-8E74-4EBC-ACED-1D94FD1F6C9B}.Release Fullscreen|Android.ActiveCfg = Release Fullscreen|Android
+		{CD2CE70F-8E74-4EBC-ACED-1D94FD1F6C9B}.Release Fullscreen|Android.Build.0 = Release Fullscreen|Android
+		{CD2CE70F-8E74-4EBC-ACED-1D94FD1F6C9B}.Release Fullscreen|Android.Deploy.0 = Release Fullscreen|Android
+		{CD2CE70F-8E74-4EBC-ACED-1D94FD1F6C9B}.Release Fullscreen|Win32.ActiveCfg = Release Fullscreen|Win32
+		{CD2CE70F-8E74-4EBC-ACED-1D94FD1F6C9B}.Release Fullscreen|Win32.Build.0 = Release Fullscreen|Win32
+		{CD2CE70F-8E74-4EBC-ACED-1D94FD1F6C9B}.Release|Android.ActiveCfg = Release|Android
+		{CD2CE70F-8E74-4EBC-ACED-1D94FD1F6C9B}.Release|Android.Build.0 = Release|Android
+		{CD2CE70F-8E74-4EBC-ACED-1D94FD1F6C9B}.Release|Android.Deploy.0 = Release|Android
+		{CD2CE70F-8E74-4EBC-ACED-1D94FD1F6C9B}.Release|Win32.ActiveCfg = Release|Win32
+		{CD2CE70F-8E74-4EBC-ACED-1D94FD1F6C9B}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

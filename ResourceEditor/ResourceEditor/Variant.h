@@ -16,12 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-typedef class Serializer
-{
-public:
-	virtual void Save(ostream& str)=0;
-	virtual void Load(istream& str)=0;
-}* LPSerializer;
+#define RESERVEDNAME "name=~:reserved"
 
 union Var
 {
@@ -96,11 +91,6 @@ public:
 	operator void*()
 	{
 		return val.Pointer;
-	}
-
-	LPSerializer GetSerializer()
-	{
-		return static_cast<LPSerializer>(val.Pointer);
 	}
 
 	operator double()
@@ -345,22 +335,7 @@ public:
 		return *this;
 	}
 
-	Variant& operator=(LPSerializer val1)
-	{
-		ClearString();
-		val.Pointer = val1;
-		type = TSerializer;
-		return *this;
-	}
 	//
-
-	Variant(LPSerializer val1)
-	{
-		ClearString();
-		val.Pointer = val1;
-		type = TSerializer;
-	}
-
 	Variant(unsigned short i) 
 	{
 		ClearString();
@@ -473,12 +448,12 @@ public:
 		type = WString;
 	}
 
-	bool operator>>(ostream& str)
+	bool operator>>(BaseIO& str)
 	{
 		return Write(&str);
 	}
 
-	bool Write(ostream* str)
+	bool Write(BaseIO* str, bool hidden = false)
 	{
 		int Integer;
 		bool Boolean;
@@ -493,106 +468,109 @@ public:
 		wstring ws;
 		short Short;
 		unsigned short UShort;
+		unsigned int sz = 0;
+		bool good = false;
+		unsigned short* tmchar = 0;
 
 		switch(GetType())
 		{
 		case Variant::UShort:
 			Character = GetType();
-			str->write(reinterpret_cast<char*>(&Character), sizeof(char));
+			good = str->Write(Character, &sz, RESERVEDNAME, hidden);
 			UShort = *this;
-			str->write(reinterpret_cast<char*>(&UShort), sizeof(unsigned short));
+			good = str->Write(UShort, &sz, RESERVEDNAME, hidden);
 			break;
 		case Variant::Short:
 			Character = GetType();
-			str->write(reinterpret_cast<char*>(&Character), sizeof(char));
+			good = str->Write((Character), &sz, RESERVEDNAME, hidden);
 			Short = *this;
-			str->write(reinterpret_cast<char*>(&Short), sizeof(short));
+			good = str->Write((Short), &sz, RESERVEDNAME, hidden);
 			break;
 		case Variant::UInt:
 			Character = GetType();
-			str->write(reinterpret_cast<char*>(&Character), sizeof(char));
+			good = str->Write((Character), &sz, RESERVEDNAME, hidden);
 			UInteger = *this;
-			str->write(reinterpret_cast<char*>(&UInteger), sizeof(unsigned int));
+			good = str->Write((UInteger), &sz, RESERVEDNAME, hidden);
 			break;
 		case Variant::Int:
 			Character = GetType();
-			str->write(reinterpret_cast<char*>(&Character), sizeof(char));
+			good = str->Write((Character), &sz, RESERVEDNAME, hidden);
 			Integer = *this;
-			str->write(reinterpret_cast<char*>(&Integer), sizeof(int));
+			good = str->Write((Integer), &sz, RESERVEDNAME, hidden);
 			break;
 		case Variant::Bool:
 			Character = GetType();
-			str->write(reinterpret_cast<char*>(&Character), sizeof(char));
+			good = str->Write((Character), &sz, RESERVEDNAME, hidden);
 			Boolean = *this;
-			str->write(reinterpret_cast<char*>(&Boolean), sizeof(bool));
+			good = str->Write((Boolean), &sz, RESERVEDNAME, hidden);
 			break;
 		case Variant::Dbl:
 			Character = GetType();
-			str->write(reinterpret_cast<char*>(&Character), sizeof(char));
+			good = str->Write((Character), &sz, RESERVEDNAME, hidden);
 			Double = *this;
-			str->write(reinterpret_cast<char*>(&Double), sizeof(double));
+			good = str->Write((Double), &sz, RESERVEDNAME, hidden);
 			break;
 		case Variant::Float:
 			Character = GetType();
-			str->write(reinterpret_cast<char*>(&Character), sizeof(char));
+			good = str->Write((Character), &sz, RESERVEDNAME, hidden);
 			Float = *this;
-			str->write(reinterpret_cast<char*>(&Float), sizeof(float));
+			good = str->Write((Float), &sz, RESERVEDNAME, hidden);
 			break;
 		case Variant::LInt:
 			Character = GetType();
-			str->write(reinterpret_cast<char*>(&Character), sizeof(char));
+			good = str->Write((Character), &sz, RESERVEDNAME, hidden);
 			LongInteger = *this;
-			str->write(reinterpret_cast<char*>(&LongInteger), sizeof(long long));
+			good = str->Write((LongInteger), &sz, RESERVEDNAME, hidden);
 			break;
 		case Variant::ULInt:
 			Character = GetType();
-			str->write(reinterpret_cast<char*>(&Character), sizeof(char));
+			good = str->Write((Character), &sz, RESERVEDNAME, hidden);
 			ULongInteger = *this;
-			str->write(reinterpret_cast<char*>(&ULongInteger), sizeof(unsigned long long));
+			good = str->Write((ULongInteger), &sz, RESERVEDNAME, hidden);
 			break;
 		case Variant::Char:
 			Character = GetType();
-			str->write(reinterpret_cast<char*>(&Character), sizeof(char));
+			good = str->Write((Character), &sz, RESERVEDNAME, hidden);
 			Character = *this;
-			str->write(reinterpret_cast<char*>(&Character), sizeof(char));
+			good = str->Write((Character), &sz, RESERVEDNAME, hidden);
 			break;
 		case Variant::WChar:
 			Character = GetType();
-			str->write(reinterpret_cast<char*>(&Character), sizeof(char));
+			good = str->Write((Character), &sz, RESERVEDNAME, hidden);
 			WideCharacter = *this;
-			str->write(reinterpret_cast<char*>(&WideCharacter), sizeof(wchar_t));
+			good = str->Write((WideCharacter), &sz, RESERVEDNAME, hidden);
 			break;
 		case Variant::String:
 			Character = GetType();
-			str->write(reinterpret_cast<char*>(&Character), sizeof(char));
+			good = str->Write(Character, &sz, RESERVEDNAME, hidden);
 			s = static_cast<const char*>(*this);
 			UInteger = s.size();
-			str->write(reinterpret_cast<char*>(&UInteger), sizeof(unsigned int));
-			str->write(static_cast<const char*>(s.c_str()), UInteger);
+			good = str->Write(UInteger, &sz, RESERVEDNAME, hidden);
+			sz = UInteger;
+			good = str->Write(reinterpret_cast<const void*>(s.c_str()), &sz, RESERVEDNAME);
 			break;
 		case Variant::WString:
 			Character = GetType();
-			str->write(reinterpret_cast<char*>(&Character), sizeof(char));
+			good = str->Write(Character, &sz, RESERVEDNAME, hidden);
 			ws = static_cast<const wchar_t*>(*this);
-			UInteger = ws.size() * sizeof(wchar_t);
-			str->write(reinterpret_cast<char*>(&UInteger), sizeof(unsigned int));
-			str->write(reinterpret_cast<char*>(const_cast<wchar_t*>(ws.c_str())), UInteger);
-			break;
-		case Variant::TSerializer:
-			Character = GetType();
-			str->write(reinterpret_cast<char*>(&Character), sizeof(char));
-			GetSerializer()->Save(*str);
+			UInteger = ws.size() * sizeof(unsigned short);
+			good = str->Write(UInteger, &sz, RESERVEDNAME, hidden);
+			sz = UInteger;
+			tmchar = new unsigned short[ws.size()];
+			ConvertWcharTo16Bit(tmchar, ws.c_str(), ws.size());
+			good = str->Write(reinterpret_cast<const void*>(tmchar), &sz, RESERVEDNAME);
+			delete [] tmchar;
 			break;
 		}
-		return str->good();
+		return good;
 	}
 
-	bool operator<<(istream& str)
+	bool operator<<(BaseIO& str)
 	{
 		return Read(&str);
 	}
 
-	bool Read(istream* str)
+	bool Read(BaseIO* str, bool hidden = false)
 	{
 		int Integer;
 		bool Boolean;
@@ -610,75 +588,83 @@ public:
 		wchar_t* wchr;
 		short Short;
 		unsigned short UShort;
+		unsigned int sz = 0;
+		string chr2;
+		wstring wchr2;
+		bool good = false;
+		unsigned short* twchar = 0;
 
-		str->read(reinterpret_cast<char*>(&type), sizeof(char));
+		good = str->Read(type, &sz, hidden);
+		if(!good) return false;
 		switch(type)
 		{
 		case Variant::UShort:
-			str->read(reinterpret_cast<char*>(&UShort), sizeof(unsigned short));
+			good = str->Read(UShort, &sz, hidden);
 			*this = UShort;
 			break;
 		case Variant::Short:
-			str->read(reinterpret_cast<char*>(&Short), sizeof(short));
+			good = str->Read(Short, &sz, hidden);
 			*this = Short;
 			break;
 		case Variant::UInt:
-			str->read(reinterpret_cast<char*>(&UInteger), sizeof(unsigned int));
+			good = str->Read(UInteger, &sz, hidden);
 			*this = UInteger;
 			break;
 		case Variant::Int:
-			str->read(reinterpret_cast<char*>(&Integer), sizeof(int));
+			good = str->Read(Integer, &sz, hidden);
 			*this = Integer;
 			break;
 		case Variant::Bool:
-			str->read(reinterpret_cast<char*>(&Boolean), sizeof(bool));
+			good = str->Read(Boolean, &sz, hidden);
 			*this = Boolean;
 			break;
 		case Variant::Dbl:
-			str->read(reinterpret_cast<char*>(&Double), sizeof(double));
+			good = str->Read(Double, &sz, hidden);
 			*this = Double;
 			break;
 		case Variant::Float:
-			str->read(reinterpret_cast<char*>(&Float), sizeof(float));
+			good = str->Read(Float, &sz, hidden);
 			*this = Float;
 			break;
 		case Variant::LInt:
-			str->read(reinterpret_cast<char*>(&LongInteger), sizeof(long long));
+			good = str->Read(LongInteger, &sz, hidden);
 			*this = LongInteger;
 			break;
 		case Variant::ULInt:				
-			str->read(reinterpret_cast<char*>(&ULongInteger), sizeof(unsigned long long));
+			good = str->Read(ULongInteger, &sz, hidden);
 			*this = ULongInteger;
 			break;
 		case Variant::Char:				
-			str->read(reinterpret_cast<char*>(&Character), sizeof(char));
+			good = str->Read(Character, &sz, hidden);
 			*this = Character;
 			break;
 		case Variant::WChar:				
-			str->read(reinterpret_cast<char*>(&WideCharacter), sizeof(wchar_t));
+			good = str->Read(WideCharacter, &sz, hidden);
 			*this = WideCharacter;
 			break;
-		case Variant::String:
-			str->read(reinterpret_cast<char*>(&UInteger), sizeof(unsigned int));
+		case Variant::String:			
+			good = str->Read(UInteger, &sz, hidden);
 			chr = new char[UInteger+1];
-			str->read(chr, UInteger);
+			sz = UInteger;
+			good = str->Read((void*)chr, &sz);
 			chr[UInteger] = '\0';
 			*this = chr;
-			delete chr;
+			delete [] chr;
 			break;
 		case Variant::WString:
-			str->read(reinterpret_cast<char*>(&UInteger), sizeof(unsigned int));
-			wchr = new wchar_t[(UInteger)/sizeof(wchar_t) + sizeof(wchar_t)];
-			str->read(reinterpret_cast<char*>(wchr), UInteger);
-			wchr[UInteger/sizeof(wchar_t)] = L'\0';
+			good = str->Read(UInteger, &sz, hidden);
+			twchar = new unsigned short[(UInteger)/sizeof(unsigned short) + sizeof(unsigned short)];
+			wchr = new wchar_t[(UInteger)/sizeof(unsigned short) + sizeof(unsigned short)];
+			sz = UInteger;
+			good = str->Read(reinterpret_cast<void*>(twchar), &sz);
+			twchar[UInteger/sizeof(unsigned short)] = L'\0';
+			Convert16BitWchar(wchr, twchar, (UInteger)/sizeof(unsigned short) + sizeof(unsigned short));
+			delete [] twchar;
 			*this = wchr;
-			delete wchr;
-			break;
-		case Variant::TSerializer:
-			if(GetType()==Variant::TSerializer)GetSerializer()->Load(*str);
+			delete [] wchr;
 			break;
 		}
-		return str->good();
+		return good;
 	}
 
 	~Variant()

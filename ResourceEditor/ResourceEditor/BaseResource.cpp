@@ -1,4 +1,22 @@
-#include "CDialogs.h"
+/*
+ * Copyright (c) 2013 Omkar Kanase
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty.  In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ * 1. The origin of this software must not be misrepresented; you must not
+ * claim that you wrote the original software. If you use this software
+ * in a product, an acknowledgment in the product documentation would be
+ * appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ * misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ */
+
+#include "stdafx.h"
 
 // Resource Impl
 const char* IResource::GetName() const
@@ -69,6 +87,23 @@ ResourceManager::ResourceManager()
 	m_dev = 0;
 	UserData = 0;
 	m_player = 0;
+	currentloader = m_list.end();
+	m_progress = 0;
+	m_grpid = 0;
+	m_sychloading = false;
+}
+
+bool ResourceManager::GetSynchLoading()
+{
+	return m_sychloading;
+}
+
+void ResourceManager::ResetSynchLoader(unsigned int gid)
+{
+	currentloader = m_list.begin();
+	m_progress = 0;
+	m_grpid = gid;
+	m_sychloading = true;
 }
 
 void ResourceManager::SetLoadingStatus(int status)
@@ -201,7 +236,7 @@ bool ResourceManager::RemoveResource(const char* name)
 	return tmp;
 }
 
-bool ResourceManager:: ReleaseResource(const char* name)
+bool ResourceManager::ReleaseResource(const char* name)
 {
 	bool tmp = false;
 	RES_LOCK
@@ -304,6 +339,9 @@ bool ResourceManager::PrepareResources(const wchar_t* filename)
 {
 	bool flag = false;
 	ZipFile fs;
+	set<string> files;
+	ZipFile::GetFilesList(files);
+
 	if(!fs.Open(filename)) return false;
 	Variant count;
 	count << fs;
@@ -319,11 +357,100 @@ bool ResourceManager::PrepareResources(const wchar_t* filename)
 		path << fs;
 		type << fs;
 		group << fs;
-
 		if(CreateResource(name, group, type, path)) flag = true;
+		char p[256];
+		WideCharToMultiByte(p, path, 256);
+		files.erase(p);
 	}
 
 	fs.Close();
+
+	vector<string> arr;
+	vector<string> arr2;
+	vector<string> arr3;
+
+#ifdef ANDROID
+	vector<string> arr4;
+#endif
+
+	for(set<string>::iterator i = files.begin(); i != files.end(); i++)
+	{
+#ifdef ANDROID
+		arr4.clear();
+		GetStringArray(arr4, (*i).c_str(), '/');
+		string asset = arr4[0];
+		std::transform(asset.begin(), asset.end(), asset.begin(), tolower);
+		if(asset != "assets") continue;
+		arr4.erase(arr4.begin());
+
+		string tpaths;
+
+		for(unsigned int i = 0; i<arr4.size(); i++)
+		{
+			tpaths += arr4[i];
+		}
+#else
+		string tpaths = (*i);
+#endif
+
+		arr.clear();
+		GetStringArray(arr, tpaths.c_str(), '.');
+		arr2.clear();
+
+		string pth = arr[0];
+		for(unsigned int f = 1; f<arr.size() - 1; f++)
+		{
+			pth += arr[f];
+		}
+
+		GetStringArray(arr2, pth.c_str(), '/');
+
+		string fname = arr2[arr2.size()-1];
+		string ext;
+		if(arr.size()>1) ext = arr[arr.size()-1];
+		//std::transform(ext.begin(), ext.end(), ext.begin(), tolower);
+		StrToLower(ext);
+
+		arr3.clear();
+		GetStringArray(arr3, pth.c_str(), '#');
+		fname = arr3[0];
+		int grp = 0;
+		if(arr3.size()>1) 
+		{
+			grp = atoi(arr3[arr3.size()-1].c_str());
+
+			pth = arr3[0];
+			for(unsigned int f = 1; f<arr3.size() - 1; f++)
+			{
+				if(f!=1) pth += "/";
+				pth += arr3[f];
+			}
+		}
+
+		wchar_t wc[256];
+		MultiByteToWideChar(wc, tpaths.c_str(), 256);
+
+		if(ext == "png")
+		{			
+			CreateResource(pth.c_str(), grp, RES_TYPE_IMAGE, wc);
+		}
+		else if(ext == "iset")
+		{
+			pth += "iset";
+			CreateResource(pth.c_str(), grp, RES_TYPE_IMAGESET, wc);
+		}
+		else if(ext == "ogg")
+		{
+			pth += "sound";
+			CreateResource(pth.c_str(), grp, RES_TYPE_SOUND, wc);
+		}
+		else if(ext == "ttf")
+		{
+			
+			
+		}
+	}
+
 	return flag;
 }
 
@@ -336,7 +463,7 @@ void ResourceManager::LoadResources()
 		LoadResourcesByType(RES_TYPE_SOUND);
 		LoadResourcesByType(RES_TYPE_IMAGESET);
 		LoadResourcesByType(RES_TYPE_SPRITE);*/
-
+		
 		unsigned int sz = m_list.size();
 		float f = 0;
 		for(map<string, Resource>::iterator i = m_list.begin(); i!=m_list.end(); ++i)
@@ -346,10 +473,53 @@ void ResourceManager::LoadResources()
 				if(i->second->LoadFromFile(this)) i->second->SetResourceStatus(IResource::Loaded);
 			}
 			++f;
-			SetLoadingStatus(static_cast<int>((f/sz)*100.0f));
+			SetLoadingStatus(static_cast<int>((f/(float)sz)*100.0f));
 		}
 	}
 	RES_UNLOCK;
+}
+
+bool ResourceManager::LoadResourcesByGroupSynch()
+{
+	unsigned int sz = m_list.size();
+	
+	if(currentloader==m_list.end())
+	{
+		return true;
+	}
+
+	if(currentloader->second->GetResourceStatus() == IResource::Waiting && currentloader->second->m_group == m_grpid)
+	{
+#if defined( ANDROID )
+		char tmp[250];
+		WideCharToMultiByte(tmp, currentloader->second->GetFileName(), 250);
+		__android_log_print(ANDROID_LOG_VERBOSE, "native", "Loading File >> %s", tmp);
+#endif
+#ifdef __AVM2__
+		char tmp[250];
+		WideCharToMultiByte(tmp, currentloader->second->GetFileName(), 250);
+		string str = "Loading File >> ";
+		str += tmp;		
+		PrintAVMLog(str);
+#endif
+		if(currentloader->second->LoadFromFile(this))
+		{
+			currentloader->second->SetResourceStatus(IResource::Loaded);
+#ifdef ANDROID 
+			__android_log_print(ANDROID_LOG_VERBOSE, "native", "Loading Sucessful >> %s", tmp);
+#endif
+#ifdef __AVM2__
+			str = "Loading Successful >> ";
+			str += tmp;
+			PrintAVMLog(str);
+#endif
+		}
+	}
+	++m_progress;
+	currentloader++;
+	SetLoadingStatus(static_cast<int>((m_progress/(float)sz)*100.0f));
+
+	return false;
 }
 
 void ResourceManager::LoadResourcesByGroup(unsigned int id)
@@ -358,69 +528,38 @@ void ResourceManager::LoadResourcesByGroup(unsigned int id)
 	{
 		unsigned int sz = m_list.size();
 		int f = 0;
-		/*for(map<string, Resource>::iterator i = m_list.begin(); i!=m_list.end(); ++i)
-		{
-			if(i->second->GetResourceStatus() == IResource::Waiting && i->second->m_group == id && i->second->m_type == RES_TYPE_FONT)
-			{
-				if(i->second->LoadFromFile(this)) i->second->SetResourceStatus(IResource::Loaded);
-			}
-			++f;
-			SetLoadingStatus(static_cast<int>((f/sz)*100.0f));
-		}
 
-		f = 0;
-		for(map<string, Resource>::iterator i = m_list.begin(); i!=m_list.end(); ++i)
-		{
-			if(i->second->GetResourceStatus() == IResource::Waiting && i->second->m_group == id && i->second->m_type == RES_TYPE_IMAGE)
-			{
-				if(i->second->LoadFromFile(this)) i->second->SetResourceStatus(IResource::Loaded);
-			}
-			++f;
-			SetLoadingStatus(static_cast<int>((f/sz)*100.0f));
-		}
-
-		f = 0;
-		for(map<string, Resource>::iterator i = m_list.begin(); i!=m_list.end(); ++i)
-		{
-			if(i->second->GetResourceStatus() == IResource::Waiting && i->second->m_group == id && i->second->m_type == RES_TYPE_SOUND)
-			{
-				if(i->second->LoadFromFile(this)) i->second->SetResourceStatus(IResource::Loaded);
-			}
-			++f;
-			SetLoadingStatus(static_cast<int>((f/sz)*100.0f));
-		}
-
-		f = 0;
-		for(map<string, Resource>::iterator i = m_list.begin(); i!=m_list.end(); ++i)
-		{
-			if(i->second->GetResourceStatus() == IResource::Waiting && i->second->m_group == id && i->second->m_type == RES_TYPE_IMAGESET)
-			{
-				if(i->second->LoadFromFile(this)) i->second->SetResourceStatus(IResource::Loaded);
-			}
-			++f;
-			SetLoadingStatus(static_cast<int>((f/sz)*100.0f));
-		}
-
-		f = 0;
-		for(map<string, Resource>::iterator i = m_list.begin(); i!=m_list.end(); ++i)
-		{
-			if(i->second->GetResourceStatus() == IResource::Waiting && i->second->m_group == id && i->second->m_type == RES_TYPE_SPRITE)
-			{
-				if(i->second->LoadFromFile(this)) i->second->SetResourceStatus(IResource::Loaded);
-			}
-			++f;
-			SetLoadingStatus(static_cast<int>((f/sz)*100.0f));
-		}*/
-
-		f = 0;
 		for(map<string, Resource>::iterator i = m_list.begin(); i!=m_list.end(); ++i)
 		{
 			if(i->second->GetResourceStatus() == IResource::Waiting && i->second->m_group == id)
 			{
-				if(i->second->LoadFromFile(this)) i->second->SetResourceStatus(IResource::Loaded);
+#if defined( ANDROID )
+				char tmp[250];
+				WideCharToMultiByte(tmp, i->second->GetFileName(), 250);
+				__android_log_print(ANDROID_LOG_VERBOSE, "native", "Loading File >> %s", tmp);
+#endif
+#ifdef __AVM2__
+				char tmp[250];
+				WideCharToMultiByte(tmp, i->second->GetFileName(), 250);
+				string str = "Loading File >> ";
+				str += tmp;		
+				PrintAVMLog(str);
+#endif
+				if(i->second->LoadFromFile(this))
+				{
+					i->second->SetResourceStatus(IResource::Loaded);
+#ifdef ANDROID 
+				__android_log_print(ANDROID_LOG_VERBOSE, "native", "Loading Sucessful >> %s", tmp);
+#endif
+#ifdef __AVM2__
+				str = "Loading Successful >> ";
+				str += tmp;
+				PrintAVMLog(str);
+#endif
+				}
 			}
 			++f;
-			SetLoadingStatus(static_cast<int>((f/sz)*100.0f));
+			SetLoadingStatus(static_cast<int>((f/(float)sz)*100.0f));
 		}
 	}
 	RES_UNLOCK;
@@ -436,10 +575,39 @@ void ResourceManager::LoadResourcesByType(unsigned int type)
 		{
 			if(i->second->GetResourceStatus() == IResource::Waiting && i->second->m_type == type)
 			{
+#ifdef ANDROID 
+				char tmp[250];
+				WideCharToMultiByte(tmp, i->second->GetFileName(), 250);
+				__android_log_print(ANDROID_LOG_VERBOSE, "native", "Loading File >> %s", tmp);
+#endif
 				if(i->second->LoadFromFile(this)) i->second->SetResourceStatus(IResource::Loaded);
+#ifdef ANDROID 
+				__android_log_print(ANDROID_LOG_VERBOSE, "native", "Loading Sucessful >> %s", tmp);
+#endif
 			}
 			++f;
-			SetLoadingStatus(static_cast<int>((f/sz)*100.0f));
+			SetLoadingStatus(static_cast<int>((f/(float)sz)*100.0f));
+		}		
+	}
+	RES_UNLOCK;
+}
+
+void ResourceManager::GetResourceNames(vector<string>& val)
+{
+	val.clear();
+	RES_LOCK
+	{
+		unsigned int sz = m_list.size();
+		int f = 0;
+		for(map<string, Resource>::iterator i = m_list.begin(); i!=m_list.end(); ++i)
+		{
+			if(i->second->GetType()==RES_TYPE_SPRITE) continue;
+			stringstream str;
+			str << i->second->GetName();
+			/*str << "\n";
+			str << i->second->GetType();*/ 
+			val.push_back(str.str());
+			++f;
 		}		
 	}
 	RES_UNLOCK;
@@ -447,6 +615,9 @@ void ResourceManager::LoadResourcesByType(unsigned int type)
 
 void ResourceManager::OnReset()
 {
+#ifdef ANDROID
+	__android_log_print(ANDROID_LOG_VERBOSE, "native", "<<< Resetting resources >>>");
+#endif
 	RES_LOCK
 	{
 		unsigned int sz = m_list.size();

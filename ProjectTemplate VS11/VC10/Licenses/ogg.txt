@@ -1,0 +1,2 @@
+ * THE OggVorbis SOURCE CODE IS (C) COPYRIGHT 1994-2007             *
+ * by the Xiph.Org Foundation http://www.xiph.org/  

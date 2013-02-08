@@ -16,7 +16,11 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-#define C_PI 3.1415926f
+/** Global Constants \addtogroup GlobalConstants
+* \{
+*/
+#define C_PI 3.1415926f ///< Constant PI value.
+/* \} */
 
 /** Structure of the rectangle holding integer vales for left,top,right,bottom properties. */
 struct RectangleI
@@ -31,10 +35,10 @@ struct RectangleI
 	RectangleI();
 
 	/** Constructor with parameters.  
-	\param left \copybrief left
-	\param top \copybrief top
-	\param right \copybrief right
-	\param bottom \copybrief bottom */
+	\param left X position of the rectable.
+	\param top Y position of the rectangle.
+	\param right Right side position of the rectangle.
+	\param bottom Buttom side position of the rectangle. */
 	RectangleI(int left, int top, int right, int bottom);
 
 	/** Adds values to the rectangle like left + rect.left for all properties.  
@@ -59,10 +63,10 @@ struct RectangleF
 	RectangleF();
 
 	/** Constructor with parameters.  
-	\param left \copybrief left
-	\param top \copybrief top
-	\param right \copybrief right
-	\param bottom \copybrief bottom */
+	\param left X position of the rectable.
+	\param top Y position of the rectangle.
+	\param right Right side position of the rectangle.
+	\param bottom Buttom side position of the rectangle. */
 	RectangleF(float left, float top, float right, float bottom);
 
 	/** Adds values to the rectangle like left + rect.left for all properties.  
@@ -148,8 +152,8 @@ struct Size
 
 
 	/** size constructor with parameters.   
-	\param width \copybrief width.
-	\param height \copybrief height.*/
+	\param width Width value of the size.
+	\param height Height value of the size.*/
 	Size(unsigned int width, unsigned int height);
 
 	/** Adds values to the size like width + pt.width for all properties.  
@@ -162,6 +166,11 @@ struct Size
 	Size operator+(PointI sz);
 };
 
+/**
+ * Fast inverse square root function.
+ * \param number Number whose inverse square root is to be determined.
+ * \return Inverse square root of the number.
+ */
 float fast_rsqrt( float number );
 
 /** Color class with 32 bit ARGB values. */
@@ -175,10 +184,10 @@ private:
 
 public:
 	/** constructor with parameters.   
-	\param a \copybrief m_colorA.
-	\param r \copybrief m_colorR.
-	\param g \copybrief m_colorG.
-	\param b \copybrief m_colorB.
+	\param a Alpha value.
+	\param r Red value.
+	\param g Green value.
+	\param b Blue value.
 	*/
 	ColorARGB32(unsigned char a = 0xFF, unsigned char r = 0, unsigned char g=0, unsigned char b=0);
 
@@ -246,7 +255,6 @@ void GetStringMap(map<string, string>& lst, const char* input, char delim1 = ';'
 	\param delim1 First delimiter for seperate string into values, Example : value;value2 (here ';' is the first delimiter).
 */
 void GetStringArray(vector<string>& lst, const char* input, char delim1 = ';');
-/** \} */
 
 /** Gobal function populates vector with values from provided input.  
 	\param lst vector for output, if vector is not empty it is not cleared.
@@ -254,7 +262,6 @@ void GetStringArray(vector<string>& lst, const char* input, char delim1 = ';');
 	\param delim1 First delimiter for seperate string into values, Example : value;value2 (here ';' is the first delimiter).
 */
 void GetStringArray(vector<int>& lst, const char* input, char delim1 = ';');
-/** \} */
 
 /** Gobal function populates vector with values from provided input.  
 	\param lst vector for output, if vector is not empty it is not cleared.
@@ -262,22 +269,74 @@ void GetStringArray(vector<int>& lst, const char* input, char delim1 = ';');
 	\param delim1 First delimiter for seperate string into values, Example : value;value2 (here ';' is the first delimiter).
 */
 void GetStringArray(vector<float>& lst, const char* input, char delim1 = ';');
-/** \} */
 
+/**
+ * Converts wide character string to multibyte (wchar_t* to char*).
+ * \param dest Destination - pointer to the character array to receive converted string.
+ * \param src Source - pointer to the string (wchar_t array) to be converted.
+ * \param max Size of the destination array.
+ */
 void WideCharToMultiByte(char* dest, const wchar_t* src, unsigned int max);
 
+/**
+ * Converts multibyte character string to wide character string (char* to wchar_t*).
+ * \param dest Destination - pointer to the wide character array to receive converted string.
+ * \param src Source - pointer to the multibyte character string array(const char*) to be converted.
+ * \param max Size of the destination array.
+ */
 void MultiByteToWideChar(wchar_t* dest, const char* src, unsigned int max);
 
+/**
+ * Converts 16bit unsigned short array to wchar_t array.
+ * \param dest Pointer to the wchar_t array.
+ * \param src Pointer to the unsigned short array to be converted.
+ * \param max Size of the destination array.
+ */
 void Convert16BitWchar(wchar_t* dest, const unsigned short* src, unsigned int max);
 
+/**
+ * Converts wide character array to unsigned short array (if wchar_t is of 4 bytes data might lost).
+ * \param dest Destination - pointer to the unsigned short array.
+ * \param src Pointer to the wchar_t* to be converted.
+ * \param max Size of the destination array.
+ */
 void ConvertWcharTo16Bit(unsigned short* dest, const wchar_t* src, unsigned int max);
 
+/**
+ * Helper class for case insensitive comparison of the strings.
+ */
 struct icompstrs 
 {
+	/**
+	 * Does case insensitive comparison of two specified strings.
+	 * \param s1 First string to be compared.
+	 * \param s2 Second string to be compared.
+	 * \return true if both strings are same otherwise false.
+	 */
 	bool operator() (const string& s1, const string& s2) const;
 };
 
+/**
+ * Wraps angle around max specified value.
+ * Example : if angle is 91 and max is 90 then angle wraps to 1.
+ * \param angle Angle to be wrapped.
+ * \param max Max value of the angle.
+ * \return Angle wrapped around max angle.
+ */
 float WrapAngle(float angle, float max);
 
+/**
+ * Converts to lower case string.
+ * \param str Reference to the string to be converted.
+ */
 void StrToLower(string& str);
+
+/**
+ * Does case insensitive comparison of specified strings.
+ * \param a s1 First string to be compared.
+ * \param b s2 Second string to be compared.
+ * \return true if both strings are same otherwise false.
+ */
 bool iequals(const string& a, const string& b);
+
+/** \} */

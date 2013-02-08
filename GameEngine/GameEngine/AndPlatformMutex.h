@@ -26,6 +26,9 @@
 
 #define RES_PLOCK_FAST if(mutex!=0) if(mutex->Lock(true))
 
+/*
+ * Mutex class for locking mechanisms of threading.(currently only usable in windows)
+ */
 class C_Mutex
 {
 private:
@@ -52,6 +55,10 @@ public:
 #endif
 	}
 
+	/**
+	 *
+	 * \param val
+	 */
 	C_Mutex(const C_Mutex& val)
 	{
 #ifdef THREADSAFE

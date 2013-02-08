@@ -671,7 +671,7 @@ TextViewer::TextViewer(ResourceManager* mgr, unsigned int ID, RectangleF const& 
 void TextViewer::Save( BaseIO& str )
 {
 	GUIText::Save(str);
-	str.Write(m_viewtype, 0, "name=View Type;help=1-Xp,2-level,3-ulevell,11-xpgain,23-txp,24-stars,25-hscore,26-paused,>100-others");
+	str.Write(m_viewtype, 0, "name=View Type;help=2-Xp,5-level,6-ulevell,11-xpgain,23-txp,24-stars,25-hscore,26-paused,>100-others");
 }
 
 void TextViewer::Load( BaseIO& str )

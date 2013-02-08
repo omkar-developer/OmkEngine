@@ -149,9 +149,6 @@
     <ClInclude Include="Scripting.h">
       <Filter>other</Filter>
     </ClInclude>
-    <ClInclude Include="GameCode.h">
-      <Filter>Android</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -252,9 +249,6 @@
     </ClCompile>
     <ClCompile Include="Scripting.cpp">
       <Filter>other</Filter>
-    </ClCompile>
-    <ClCompile Include="GameCode.cpp">
-      <Filter>Android</Filter>
     </ClCompile>
     <ClCompile Include="WinPlatform.cpp">
       <Filter>PlatformWindows</Filter>

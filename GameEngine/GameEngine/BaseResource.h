@@ -37,7 +37,7 @@
 /** Global Functions.
 \addtogroup GlobalFunctions Global Functions
 \{ */
-#define CAST_RES(type, res) static_cast<type>(res->GetResourcePtr()) ///< Casts resource type.
+#define CAST_RES(type, res) static_cast<type>(res->GetResourcePtr()) ///< Casts specified resource type.
 /** \} */
 
 class ResourceManager;
@@ -94,7 +94,7 @@ protected:
 	*/
 	virtual bool LoadFromFile(ResourceManager* mgr)=0;
 
-	virtual void OnReset()=0; ///< Called when resetting the resource is required.
+	virtual void OnReset()=0; ///< Called when resetting resources is required.
 	virtual void OnLost()=0; ///< Called when the device is lost.
 	/** \} */
 
@@ -159,6 +159,9 @@ public:
 typedef AbstractSmartPtr<IResource> Resource; ///< Smart resource pointer, Resource's IResource::Release method automatically called when all references to that pointer are destroyed.
 /** \} */
 
+/**
+ * Manages resources of all types.
+ */
 class ResourceManager
 {
 private:
@@ -292,12 +295,25 @@ public:
 	\param type Type of the resources to be loaded. */
 	void LoadResourcesByType(unsigned int type);
 
-	/** Loads all of the prepared resources specified by the group number using sychronized loop.  
-	\param id Group number of the resources to be loaded. */
+	/** Loads all of the prepared resources one by one specified by the group number using synchronized loop (ResetSynchLoader function).
+	\return true if all resources are loaded/processed otherwise false (keep calling this function till it returns true) */
 	bool LoadResourcesByGroupSynch();
 
+	/**
+	 * Resets counter of the synchronized resource loader and sets group id to new one.
+	 * \param gid Group id of the resources to be loaded using LoadResourcesByGroupSynch.
+	 */
 	void ResetSynchLoader(unsigned int gid);
+
+	/**
+	 * returns true if resource loader is set for synchronized loading otherwise false.
+	 * \return true if resource loader is set for synchronized loading otherwise false.
+	 */
 	bool GetSynchLoading();
 
+	/**
+	 * Gets list of names of resources currently managed by resource manager.
+	 * \param val Reference to the string vector object to receive names in.
+	 */
 	void GetResourceNames(vector<string>& val);
 };

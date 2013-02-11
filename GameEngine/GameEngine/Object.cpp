@@ -1920,6 +1920,18 @@ ObjectEditor::EditMode ObjectEditor::GetIntersect(PointI const& pt)
 	RectangleF Left, Top, Right, Bottom, Center;
 	Center = Left = Top = Right = Bottom = GetAbsolutePos();
 
+	float cnx = Center.left + (Center.right - Center.left) / 2.0f;
+	float cny = Center.top + (Center.bottom - Center.top) / 2.0f;
+
+	float ang = 0;
+	ang = GetAngle();
+
+	cnx = cnx + ROT_DISTANCE * cos(ang);
+	cny = cny + ROT_DISTANCE * sin(ang);
+	RectangleF rot(cnx - m_space, cny - m_space, cnx + m_space, cny + m_space);
+
+	if(PointI::Intersect(pt, rot)) return ROT;
+
 	Center.left += m_space;
 	Center.top += m_space;
 	Center.right -= m_space;
@@ -1968,6 +1980,7 @@ void ObjectEditor::UpdateSize()
 	m_location.top -= m_space;
 	m_location.right += m_space;
 	m_location.bottom += m_space;
+	SetAngle(m_object->GetAngle());
 }
 
 void ObjectEditor::UpdateObjectSize()
@@ -1979,6 +1992,7 @@ void ObjectEditor::UpdateObjectSize()
 	rect.right = m_location.right - m_space;
 	rect.bottom = m_location.bottom - m_space;
 	m_object->SetObjectArea(rect);
+	m_object->SetAngle(GetAngle());
 }
 
 void ObjectEditor::ClearObject()
@@ -2045,6 +2059,18 @@ void ObjectEditor::Draw(C_Renderer& rnd)
 	rf.left = rf.right - (m_space);
 	rf.top = rf.bottom - (m_space);
 	m_sprite.Draw(&rnd, rf, 0xFFFFFFFF, 0.0f, 0.0f);
+
+	rf = GetAbsolutePos();
+
+	float cnx = rf.left + (rf.right - rf.left) / 2.0f;
+	float cny = rf.top + (rf.bottom - rf.top) / 2.0f;
+
+	float ang = GetAngle();
+
+	cnx = cnx + ROT_DISTANCE * cos(ang);
+	cny = cny + ROT_DISTANCE * sin(ang);
+	RectangleF rot(cnx - m_space/2.0f, cny - m_space/2.0f, cnx + m_space/2.0f, cny + m_space/2.0f);
+	m_sprite.Draw(&rnd, rot, 0xFF00FF00, 0.0f, 0.0f);
 
 	/*rnd.DrawSolidCircle(PointF(GetAbsolutePos().left + (m_space/2.0f), GetAbsolutePos().top + (m_space/2.0f)), m_space/2.0f, 0xFFFFFFFF);
 	rnd.DrawSolidCircle(PointF(GetAbsolutePos().right - (m_space/2.0f), GetAbsolutePos().bottom - (m_space/2.0f)), m_space/2.0f, 0xFFFFFFFF);
@@ -2167,6 +2193,24 @@ void ObjectEditor::MouseMove(PointI const& pt)
 			m_location.top = r.top - m_oldpos.top;
 			m_location.right = m_location.left + width;
 			m_location.bottom = m_location.top + height;
+		}
+		else if(m_edit==ROT)
+		{
+			RectangleF abspos = GetAbsolutePos();
+			float cnx = abspos.left + (abspos.right - abspos.left) / 2.0f;
+			float cny = abspos.top + (abspos.bottom - abspos.top) / 2.0f;
+
+			PointF vec;
+			vec.left = pt.left - cnx;
+			vec.top = pt.top - cny;
+
+			float length = sqrt((vec.left * vec.left) + (vec.top * vec.top));
+			vec.left /= length;
+			vec.top /= length;
+
+			float ang = acos(vec.left);
+			if(vec.top < 0) ang = C_PI + (C_PI - ang);
+			SetAngle(ang);
 		}
 		UpdateObjectSize();
 		UpdateSize();

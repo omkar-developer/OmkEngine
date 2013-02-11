@@ -17,6 +17,7 @@
  */
 
 #define OBJ_VERSION 01ul
+#define ROT_DISTANCE 20.0f
 
 /** Color Constants \addtogroup ColorConstants
 * \{
@@ -1237,7 +1238,8 @@ protected:
 		RB,  ///< RightBottom
 		RT,  ///< RightTop
 		LB,  ///< LeftBottom
-		LT   ///< LeftTop
+		LT,   ///< LeftTop
+		ROT, ///< Rotation
 	};
 
 	EditMode m_edit; ///< Current editing mode.
